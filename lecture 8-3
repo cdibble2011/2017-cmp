@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Oct  2 22:47:57 2018
+
+@author: cdibble
+"""
+
+from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
+import numpy as np
+
+plt.figure(figsize=[10, 6])
+
+
+#define the function
+f = lambda x,a,b,c: (a*np.exp(x) + b*np.exp(-x) + c)
+
+#define the paramters for the plot
+x_min, x_max = 0, 1
+npoints = 100
+a = float(input("enter a coefficient for a:"))
+b = float(input("enter a coefficient for b:"))
+c = float(input("enter a coefficient for c:"))
+
+
+x = np.linspace(x_min, x_max, npoints)
+y = f(x,a,b,c) + np.random.rand(npoints) + a*b*c
+
+#do the curve fit
+params, extras = curve_fit(f, x, y)
+
+plt.plot(x,f(x,a,b,c), '--', label='ideal function')
+plt.plot(x,y, 'o', label='noisy data')
+plt.plot(x,f(x,params[0],params[1],params[2]), label='curve_fit')
+
+plt.xlabel('x')
+plt.ylabel('$f(x)$')
+plt.xlim([x_min, x_max])
+plt.legend(fontsize=12)
+plt.show()
+print('original coefficients: %6.3f, %6.3f, %6.3f' %(a,b,c))
+print('fitted   coefficients: %6.3f, %6.3f, %6.3f' %(params[0], params[1], params[2]))
